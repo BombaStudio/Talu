@@ -1,0 +1,10 @@
+let i : int = 0
+
+fn start()
+    print 31
+end
+
+fn update()
+    i = i + 1
+    print i
+end

@@ -1,0 +1,8 @@
+[package]
+name = "Talu"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+wolflang = { git = "https://github.com/islamfazliyev/Wolf-Lang" }
+raylib = "5.5"

@@ -1,0 +1,3 @@
+let screen_size_x : int = 800
+let screen_size_y : int = 600
+let title : string = "WOLF"
