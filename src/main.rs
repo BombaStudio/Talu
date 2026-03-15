@@ -1,4 +1,3 @@
-use raylib::ffi::DrawRectangle;
 use wolflang::WolfEngine;
 use wolflang::tokens::Token;
 use raylib::prelude::*;
@@ -7,6 +6,8 @@ use raylib::color::Color;
 mod utils;
 use utils::utils::*;
 
+mod draw;
+mod input;
 
 fn main() {
     let mut engine : WolfEngine = WolfEngine::new();
