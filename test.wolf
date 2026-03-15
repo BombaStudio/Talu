@@ -4,10 +4,14 @@ fn start()
     print 31
 end
 
+
 fn update()
-   drawRect(50, 50, 100, 100, 255.0, 0.0, 0.0)
+    drawLine(50, 200, 500, 200, 0.0, 0.0, 255.0)
+    if is_key_down("W")
+        drawRect(50, 50, 100, 100, 255.0, 0.0, 0.0)
+    end
 
-   drawCircle(300, 100, 40.0, 0.0, 255.0, 0.0)
-
-   drawLine(50, 200, 500, 200, 0.0, 0.0, 255.0)
+    if is_key_down("S")
+        drawCircle(300, 100, 40.0, 0.0, 255.0, 0.0)
+    end
 end

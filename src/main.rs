@@ -3,13 +3,11 @@ use wolflang::tokens::Token;
 use raylib::prelude::*;
 use raylib::color::Color;
 
-mod utils;
-use utils::utils::*;
+mod engine;
+use engine::utils::utils::*;
 
-use crate::draw::draw_register;
-
-mod draw;
-mod input;
+use engine::draw::draw_register;
+use engine::input::input as input_register;
 
 fn main() {
     let mut engine : WolfEngine = WolfEngine::new();
@@ -34,13 +32,13 @@ fn main() {
     engine.run(&code);
     engine.get_fn("start", vec![]);
     draw_register(&mut engine);
-    input::input(&mut engine);
+    input_register(&mut engine);
 
 
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::RAYWHITE);
-
+        
         engine.get_fn("update", vec![]);
     }
 }
