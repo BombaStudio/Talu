@@ -5,6 +5,5 @@ fn start()
 end
 
 fn update()
-    i = i + 1
-    print i
+   draw_rect(32, 32, 32, 32)
 end

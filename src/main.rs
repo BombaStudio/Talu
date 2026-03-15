@@ -1,6 +1,8 @@
+use raylib::ffi::DrawRectangle;
 use wolflang::WolfEngine;
 use wolflang::tokens::Token;
 use raylib::prelude::*;
+use raylib::color::Color;
 
 mod utils;
 use utils::utils::*;
@@ -28,6 +30,27 @@ fn main() {
     engine.run(&code);
     engine.get_fn("start", vec![]);
     
+    engine.push_fn("draw_rect", |args| {
+        if let (
+            Some(Token::Integer(x)),
+            Some(Token::Integer(y)),
+            Some(Token::Integer(w)),
+            Some(Token::Integer(h)),
+        ) = (args.get(0), args.get(1), args.get(2), args.get(3)) {
+            unsafe {
+                DrawRectangle(
+                    *x as i32, 
+                    *y as i32, 
+                    *w as i32, 
+                    *h as i32, 
+                    Color::RED.into()
+                );
+            }
+        }
+
+        Token::Unknown
+    });
+
     while !rl.window_should_close() {
         // Çizim aşamasını başlat
         let mut d = rl.begin_drawing(&thread);
