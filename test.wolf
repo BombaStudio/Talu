@@ -5,5 +5,9 @@ fn start()
 end
 
 fn update()
-   draw_rect(32, 32, 32, 32)
+   drawRect(50, 50, 100, 100, 255.0, 0.0, 0.0)
+
+   drawCircle(300, 100, 40.0, 0.0, 255.0, 0.0)
+
+   drawLine(50, 200, 500, 200, 0.0, 0.0, 255.0)
 end
