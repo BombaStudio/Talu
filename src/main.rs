@@ -34,11 +34,46 @@ fn main() {
     draw_register(&mut engine);
     input_register(&mut engine);
 
+    // Add this at the top of your file if it's not there:
+    // use std::panic;
+
+    // 1. Create variables to hold the crash state
+    let mut script_crashed = false;
+    let mut crash_message = String::new();
 
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::RAYWHITE);
         
-        engine.get_fn("update", vec![]);
+        // 2. Only run the script if it hasn't crashed yet
+        if !script_crashed {
+            // 3. Wrap the engine call in catch_unwind
+            let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                engine.get_fn("update", vec![])
+            }));
+
+            // 4. Check if a panic was caught
+            if let Err(panic_err) = result {
+                script_crashed = true;
+                
+                // Try to extract the panic message
+                crash_message = if let Some(s) = panic_err.downcast_ref::<&str>() {
+                    s.to_string()
+                } else if let Some(s) = panic_err.downcast_ref::<String>() {
+                    s.clone()
+                } else {
+                    "Unknown script panic".to_string()
+                };
+            }
+        }
+
+        // 5. Draw the error screen if a crash happened
+        if script_crashed {
+            d.draw_rectangle(0, 0, screen_size_x, 50, Color::new(255, 0, 0, 200));
+            d.draw_text(&format!("SCRIPT CRASHED: {}", crash_message), 10, 15, 20, Color::WHITE);
+            
+            // Optional: Hint to the user
+            d.draw_text("Fix the script and restart the engine.", 10, 60, 20, Color::DARKGRAY);
+        }
     }
 }

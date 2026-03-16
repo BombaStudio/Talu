@@ -6,9 +6,11 @@ end
 
 
 fn update()
+    yarrak()
     drawLine(50, 200, 500, 200, 0.0, 0.0, 255.0)
     if is_key_down("W")
         drawRect(50, 50, 100, 100, 255.0, 0.0, 0.0)
+        
     end
 
     if is_key_down("S")
