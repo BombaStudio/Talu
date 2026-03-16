@@ -21,7 +21,16 @@ cargo build
 
 ```
 
-### 3. Setting Up Configs
+### 3. Defining Package File
+
+Create a file that named `package.talu` for defining config and game scripts.
+
+```
+config = config.wolf
+run = test.wolf
+```
+
+### 4. Setting Up Configs
 
 Talu uses a `config.wolf` file in the root directory to initialize the window parameters before the engine boots. Create or edit it like so:
 
@@ -32,7 +41,7 @@ let title : string = "WOLF"
 
 ```
 
-### 4. Coding the Game
+### 5. Coding the Game
 
 Your game logic is written in WolfLang inside the `test.wolf` file. The engine looks for specific lifecycle functions to execute:
 
@@ -62,7 +71,7 @@ end
 
 ```
 
-### 5. Run It
+### 6. Run It
 
 To compile the engine and launch your game, simply run:
 
