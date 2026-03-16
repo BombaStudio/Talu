@@ -30,10 +30,16 @@ fn main() {
 
     let code = std::fs::read_to_string("test.wolf").unwrap();
     engine.run(&code);
+    let mut last_frame_time = std::time::Instant::now();
     engine.get_fn("start", vec![]);
     draw_register(&mut engine);
     input_register(&mut engine);
-
+    engine.push_fn("floatToInt", |args| {
+        if let Some(Token::Float(f)) = args.get(0) {
+            return Token::Integer(*f as i64);
+        }
+        Token::Integer(0)
+    });
     // Add this at the top of your file if it's not there:
     // use std::panic;
 
@@ -44,6 +50,12 @@ fn main() {
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::RAYWHITE);
+
+        let now = std::time::Instant::now();
+        let delta_time: f64 = now.duration_since(last_frame_time).as_secs_f64();
+        last_frame_time = now;
+
+        engine.push_float("deltaTime", delta_time);
         
         // 2. Only run the script if it hasn't crashed yet
         if !script_crashed {

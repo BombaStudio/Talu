@@ -12,7 +12,7 @@ pub const KEYS: [(&str, KeyboardKey); 94] = [
     ("D", KeyboardKey::KEY_D), ("E", KeyboardKey::KEY_E), ("F", KeyboardKey::KEY_F),
     ("G", KeyboardKey::KEY_G), ("H", KeyboardKey::KEY_H), ("I", KeyboardKey::KEY_I),
     ("J", KeyboardKey::KEY_J), ("K", KeyboardKey::KEY_K), ("L", KeyboardKey::KEY_L),
-    ("M", KeyboardKey::KEY_M), ("N", KeyboardKey::KEY_N), ("O", KeyboardKey::KEY_O),
+    ("M", KeyboardKey::KEY_M), ("N", KeyboardKey::KEY_N ), ("O", KeyboardKey::KEY_O),
     ("P", KeyboardKey::KEY_P), ("Q", KeyboardKey::KEY_Q), ("R", KeyboardKey::KEY_R),
     ("S", KeyboardKey::KEY_S), ("T", KeyboardKey::KEY_T), ("U", KeyboardKey::KEY_U),
     ("V", KeyboardKey::KEY_V), ("W", KeyboardKey::KEY_W), ("X", KeyboardKey::KEY_X),

@@ -1,19 +1,23 @@
-let i : int = 0
-
+let px : float = 400.0
+let py : float = 300.0
+let speed : float = 100.0
 fn start()
-    print 31
+    
 end
 
 
 fn update()
-    yarrak()
-    drawLine(50, 200, 500, 200, 0.0, 0.0, 255.0)
+    drawCircle(px, py, 20.0, 131.0, 47.0, 47.0)
     if is_key_down("W")
-        drawRect(50, 50, 100, 100, 255.0, 0.0, 0.0)
-        
+        py = py - speed * deltaTime
     end
-
     if is_key_down("S")
-        drawCircle(300, 100, 40.0, 0.0, 255.0, 0.0)
+        py = py + speed * deltaTime
+    end
+    if is_key_down("A")
+        px = px - speed * deltaTime
+    end
+    if is_key_down("D")
+        px = px + speed * deltaTime
     end
 end
