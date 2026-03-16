@@ -4,47 +4,21 @@ use raylib::prelude::*;
 use raylib::color::Color;
 
 mod engine;
+mod setup;
 use engine::utils::utils::*;
 
 use engine::draw::draw_register;
 use engine::input::input as input_register;
 
-fn get_files(package_content: &str) -> [(&str, &str); 2] {
-    let mut config_file = "";
-    let mut run_file = "";
-
-    for line in package_content.lines() {
-        let parts: Vec<&str> = line.split('=').map(|s| s.trim()).collect();
-        
-        if parts.len() == 2 {
-            match parts[0] {
-                "config" => config_file = parts[1],
-                "run" => run_file = parts[1],
-                _ => {} // Ignore unknown keys
-            }
-        }
-    }
-
-    // Return the array of string slices
-    [
-        ("config", config_file),
-        ("run", run_file)
-    ]
-}
+use setup::cli;
+use setup::get_files;
 
 fn main() {
-    // 1. Read the file here so the memory lives for the whole game loop
-    let package = std::fs::read_to_string("package.talu").expect("Could not find package.talu");
-
-    // 2. Pass a reference to the function. It returns slices pointing to `package`
-    let package_files: [(&str, &str); 2] = get_files(&package);
-
-    let config_path = package_files[0].1;
-    let run_path = package_files[1].1;
+    let (config_path, run_path) = cli().expect("Setup failed. Check package.talu and directory.");
 
     let mut engine : WolfEngine = WolfEngine::new();
 
-    let mut game_config = std::fs::read_to_string(config_path).unwrap();
+    let mut game_config = std::fs::read_to_string(&config_path).map_err(|_| "Config read failed").expect("Config read failed");
     engine.run(&game_config);
 
     let mut screen_size_x = opt_to_i32(engine.get_int("screen_size_x"));
@@ -60,7 +34,7 @@ fn main() {
         .build();
 
 
-    let code = std::fs::read_to_string(run_path).unwrap();
+    let code = std::fs::read_to_string(&run_path).map_err(|_| "Run script read failed").expect("Run script read failed");
     engine.run(&code);
     let mut last_frame_time = std::time::Instant::now();
     engine.get_fn("start", vec![]);

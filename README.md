@@ -76,8 +76,14 @@ end
 To compile the engine and launch your game, simply run:
 
 ```bash
-cargo run
+cargo run .
 
+```
+
+### 7. Run Another Projects
+
+```bash
+cargo run [project_direction] 
 ```
 
 ---

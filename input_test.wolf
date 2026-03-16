@@ -1,9 +1,0 @@
-fn update()
-    if is_key_down("W")
-        draw_rect(32, 32, 32, 32, 255.0, 0.0, 0.0)
-    end
-
-    if is_key_down("S")
-        draw_rect(32, 32, 32, 32, 0.0, 255.0, 0.0)
-    end
-end
