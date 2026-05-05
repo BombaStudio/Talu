@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use wolflang::WolfEngine;
 use wolflang::tokens::Token;
 use raylib::prelude::*;
@@ -7,15 +9,16 @@ mod engine;
 mod setup;
 use engine::utils::utils::*;
 
-use engine::draw::draw_register;
+use engine::draw::{draw_register, Shapes};
 use engine::input::input as input_register;
 
 use setup::cli;
 use setup::get_files;
 
+
 fn main() {
     let (config_path, run_path) = cli().expect("Setup failed. Check package.talu and directory.");
-
+    let draw_list: Arc<Mutex<Vec<Shapes>>> = Arc::new(Mutex::new(vec![]));
     let mut engine : WolfEngine = WolfEngine::new();
 
     let mut game_config = std::fs::read_to_string(&config_path).map_err(|_| "Config read failed").expect("Config read failed");
@@ -38,7 +41,7 @@ fn main() {
     engine.run(&code);
     let mut last_frame_time = std::time::Instant::now();
     engine.get_fn("start", vec![]);
-    draw_register(&mut engine);
+    draw_register(&mut engine, draw_list.clone());
     input_register(&mut engine);
     engine.push_fn("floatToInt", |args| {
         if let Some(Token::Float(f)) = args.get(0) {
@@ -67,7 +70,8 @@ fn main() {
         if !script_crashed {
             // 3. Wrap the engine call in catch_unwind
             let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                engine.get_fn("update", vec![])
+                draw_list.lock().unwrap().clear();
+                engine.get_fn("update", vec![]);
             }));
 
             // 4. Check if a panic was caught
@@ -83,6 +87,37 @@ fn main() {
                     "Unknown script panic".to_string()
                 };
             }
+            let shapes = draw_list.lock().unwrap();
+            for shape in shapes.iter() {
+                match shape {
+                    Shapes::Circle { pos, rad, col } => d.draw_circle_v(pos, *rad, col),
+                    Shapes::Rectangle { pos, size, col } => d.draw_rectangle_v(pos, size, col),
+                    Shapes::Line { start, end, col } => d.draw_line_v(start, end, col),
+                }
+
+            }
+            // for shape in shapes.iter() {
+            //     match shape {
+            //         Shapes::Rectangle { pos, size, col } => {
+            //             println!(
+            //                 "[RECT] pos({}, {}) size({}, {}) color({}, {}, {})",
+            //                 pos.x, pos.y, size.x, size.y, col.r, col.g, col.b
+            //             );
+            //         }
+            //         Shapes::Circle { pos, rad, col } => {
+            //             println!(
+            //                 "[CIRCLE] pos({}, {}) rad({}) color({}, {}, {})",
+            //                 pos.x, pos.y, rad, col.r, col.g, col.b
+            //             );
+            //         }
+            //         Shapes::Line { start, end, col } => {
+            //             println!(
+            //                 "[LINE] from({}, {}) to({}, {}) color({}, {}, {})",
+            //                 start.x, start.y, end.x, end.y, col.r, col.g, col.b
+            //             );
+            //         }
+            //     }
+            // }
         }
 
         // 5. Draw the error screen if a crash happened

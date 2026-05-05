@@ -8,6 +8,8 @@ end
 
 fn update()
     drawCircle(px, py, 20.0, 131.0, 47.0, 47.0)
+    drawRect(100.0, 100.0, 20.0, 20.0, 131.0, 47.0, 47.0)
+    drawRect(150.0, 300.0, 20.0, 20.0, 131.0, 47.0, 47.0)
     if is_key_down("W")
         py = py - speed * deltaTime
     end

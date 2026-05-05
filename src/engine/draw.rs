@@ -1,68 +1,72 @@
 use raylib::prelude::*;
 use wolflang::WolfEngine;
 use wolflang::tokens::Token;
+use std::sync::{Arc, Mutex};
 
-pub fn draw_register(engine: &mut WolfEngine) {
-    engine.push_fn("drawRect", |args| {
+#[derive(Debug)]
+pub enum Shapes {
+    Circle { pos: Vector2, rad: f32, col: Color },
+    Rectangle { pos: Vector2, size: Vector2, col: Color },
+    Line { start: Vector2, end: Vector2, col: Color },
+}
+
+pub fn draw_register(engine: &mut WolfEngine, draw_list: Arc<Mutex<Vec<Shapes>>>) {
+
+    let dl = draw_list.clone();
+    engine.push_fn("drawRect", move |args| {
         if let (
             Some(Token::Float(x)),
             Some(Token::Float(y)),
             Some(Token::Float(w)),
             Some(Token::Float(h)),
-            Some(Token::Float(r_c)),
-            Some(Token::Float(g_c)),
-            Some(Token::Float(b_c)),
+            Some(Token::Float(r)),
+            Some(Token::Float(g)),
+            Some(Token::Float(b)),
         ) = (args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5), args.get(6)) {
-            unsafe {
-                raylib::ffi::DrawRectangleV(
-                    raylib::ffi::Vector2 { x: *x as f32, y: *y as f32 },
-                    raylib::ffi::Vector2 { x: *w as f32, y: *h as f32 },
-                    Color::new(*r_c as u8, *g_c as u8, *b_c as u8, 255).into()
-                );
-            }
+            dl.lock().unwrap().push(Shapes::Rectangle {
+                pos: Vector2 { x: *x as f32, y: *y as f32 },
+                size: Vector2 { x: *w as f32, y: *h as f32 },
+                col: Color::new(*r as u8, *g as u8, *b as u8, 255),
+            });
         }
         Token::Unknown
     });
 
-    engine.push_fn("drawCircle", |args| {
-        
+    let dl = draw_list.clone();
+    engine.push_fn("drawCircle", move |args| {
         if let (
             Some(Token::Float(x)),
             Some(Token::Float(y)),
             Some(Token::Float(r)),
-            Some(Token::Float(r_c)),
-            Some(Token::Float(g_c)),
-            Some(Token::Float(b_c)),
+            Some(Token::Float(rc)),
+            Some(Token::Float(gc)),
+            Some(Token::Float(bc)),
         ) = (args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5)) {
-            unsafe {
-                raylib::ffi::DrawCircleV(
-                    raylib::ffi::Vector2 {x: *x as f32, y: *y as f32},
-                    *r as f32,
-                    Color::new(*r_c as u8, *g_c as u8, *b_c as u8, 255).into()
-                );
-            }
+            dl.lock().unwrap().push(Shapes::Circle {
+                pos: Vector2 { x: *x as f32, y: *y as f32 },
+                rad: *r as f32,
+                col: Color::new(*rc as u8, *gc as u8, *bc as u8, 255),
+            });
         }
         Token::Unknown
     });
 
-    engine.push_fn("drawLine", |args| {
+    let dl = draw_list.clone();
+    engine.push_fn("drawLine", move |args| {
         if let (
-            Some(Token::Float(s_x)),
-            Some(Token::Float(s_y)),
-            Some(Token::Float(e_x)),
-            Some(Token::Float(e_y)),
-            Some(Token::Float(r_c)),
-            Some(Token::Float(g_c)),
-            Some(Token::Float(b_c)),
+            Some(Token::Float(sx)),
+            Some(Token::Float(sy)),
+            Some(Token::Float(ex)),
+            Some(Token::Float(ey)),
+            Some(Token::Float(r)),
+            Some(Token::Float(g)),
+            Some(Token::Float(b)),
         ) = (args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5), args.get(6)) {
-            unsafe {
-                raylib::ffi::DrawLineV(
-                    raylib::ffi::Vector2 {x: *s_x as f32, y: *s_y as f32},
-                    raylib::ffi::Vector2 {x: *e_x as f32, y: *e_y as f32},
-                    Color::new(*r_c as u8, *g_c as u8, *b_c as u8, 255).into()
-                    
-                );
-            }
+            dl.lock().unwrap().push(Shapes::Line {
+                start: Vector2 { x: *sx as f32, y: *sy as f32 },
+                end: Vector2 { x: *ex as f32, y: *ey as f32 },
+                col: Color::new(*r as u8, *g as u8, *b as u8, 255),
+            });
         }
         Token::Unknown
     });
