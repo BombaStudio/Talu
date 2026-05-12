@@ -1,112 +1,89 @@
-# Talu Engine
+# 🐺 Talu Engine
 
-The first 2D game framework powered by **WolfLang** and **Rust** (via Raylib).
+<div align="center">
+  <img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" />
+  <img src="https://img.shields.io/badge/Raylib-000000?style=for-the-badge&logo=raylib&logoColor=white" alt="Raylib" />
+  <img src="https://img.shields.io/badge/WolfLang-5E35B1?style=for-the-badge&logo=wolf&logoColor=white" alt="WolfLang" />
+  <br>
+  <strong>A high-performance 2D game engine powered by Rust and scripted with WolfLang.</strong>
+</div>
 
-## Installation
+---
 
-### 1. Get the source on GitHub
+Talu is a professional-grade 2D game framework that combines the safety and performance of **Rust** with the simplicity of **WolfLang**. Designed for developers who want to build games quickly without sacrificing power.
+
+## ✨ Features
+
+- **🚀 High Performance**: Built on top of Rust and Raylib 5.5 for blazing-fast rendering.
+- **📜 Scripting Mastery**: Express your game logic easily with **WolfLang**.
+- **⚖️ Built-in Physics**: Integrated physics module with collision detection.
+- **🎮 Input System**: Comprehensive keyboard and mouse input handling.
+- **🎨 Render Primitives**: Draw rectangles, circles, and lines with ease.
+- **🛠️ Developer-First**: Real-time panic-catching UI that prevents crashes and shows debug info.
+- **📦 Modular Packages**: Organize your projects with independent `package.talu` and `config.wolf` setups.
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+Ensure you have the [Rust toolchain](https://rustup.rs/) installed on your system.
+
+### 2. Installation
+Clone the repository and build the engine:
 
 ```bash
 git clone https://github.com/BombaStudio/Talu.git
 cd Talu
-
+cargo build --release
 ```
 
-### 2. Installing Dependencies
-
-Because Talu is built with Rust and manages its dependencies via Cargo, you don't need to manually install external libraries. Just ensure you have the Rust toolchain installed.
+### 3. Running Examples
+Talu comes with several pre-built examples to get you started:
 
 ```bash
-cargo build
+# Run the platformer example
+cargo run examples/platformer
 
+# Run the physics simulation
+cargo run examples/rigidbody_boxes
+
+# Run the clicker game
+cargo run examples/clicker
 ```
 
-### 3. Defining Package File
+## 📖 Usage
 
-Create a file that named `package.talu` for defining config and game scripts.
+A Talu project typically consists of:
+1. `package.talu`: Defines the configuration and entry script.
+2. `config.wolf`: Window and engine initialization parameters.
+3. `your_script.wolf`: Your game logic (must define `start()` and `update()`).
 
-```
-config = config.wolf
-run = test.wolf
-```
+Check out the [User Manual](docs/manual.md) for a deep dive into the engine's capabilities.
 
-### 4. Setting Up Configs
+## 📚 Documentation & History
 
-Talu uses a `config.wolf` file in the root directory to initialize the window parameters before the engine boots. Create or edit it like so:
+- 📘 **[User Manual](docs/manual.md)**: Detailed API references, project structure, and scripting guide.
+- 📜 **[Changelog](CHANGELOG.md)**: Track all the latest updates, features, and bug fixes.
+- 📂 **[Examples](examples/)**: Explore pre-built projects like the Platformer and Physics simulations.
 
-```text
-let screen_size_x : int = 800
-let screen_size_y : int = 600
-let title : string = "WOLF"
+## 🛠️ Built-in API
 
-```
-
-### 5. Coding the Game
-
-Your game logic is written in WolfLang inside the `test.wolf` file. The engine looks for specific lifecycle functions to execute:
-
-* `start()`: Called once when the engine initializes.
-* `update()`: Called every frame during the game loop.
-
-Here is an example `test.wolf` script demonstrating rendering and input:
-
-```text
-fn start()
-    print "Game Initialized"
-end
-
-fn update()
-    // Render a static line
-    drawLine(50, 200, 500, 200, 0.0, 0.0, 255.0)
-    
-    // Input handling and drawing shapes
-    if is_key_down("W")
-        drawRect(50, 50, 100, 100, 255.0, 0.0, 0.0)
-    end
-
-    if is_key_down("S")
-        drawCircle(300, 100, 40.0, 0.0, 255.0, 0.0)
-    end
-end
-
-```
-
-### 6. Run It
-
-To compile the engine and launch your game, simply run:
-
-```bash
-cargo run .
-
-```
-
-### 7. Run Another Projects
-
-```bash
-cargo run [project_direction] 
-```
+| Category | Function | Description |
+| :--- | :--- | :--- |
+| **Rendering** | `drawRect(x, y, w, h, r, g, b)` | Draws a colored rectangle. |
+| | `drawCircle(x, y, rad, r, g, b)` | Draws a colored circle. |
+| | `drawLine(sx, sy, ex, ey, r, g, b)` | Draws a colored line. |
+| **Physics** | `check_collision(x1, y1, w1, h1, x2, y2, w2, h2)` | Returns `true` if two rects overlap. |
+| **Input** | `is_key_down(key)` | Checks if a key is currently held. |
+| | `is_key_pressed(key)` | Checks if a key was pressed this frame. |
+| **Utility** | `print(msg)` | Prints a message to the console. |
+| | `random_float(min, max)` | Generates a random float. |
 
 ---
 
-## Built-in Engine API
+<div align="center">
+  <sub>Built with ❤️ by the BombaStudio Team</sub>
+</div>
 
-### Rendering
+## 📈 Star History
 
-Colors are passed as RGB floats `(0.0 to 255.0)`.
-
-* `drawRect(x: int, y: int, width: int, height: int, r: float, g: float, b: float)`
-* `drawCircle(x: int, y: int, radius: float, r: float, g: float, b: float)`
-* `drawLine(start_x: int, start_y: int, end_x: int, end_y: int, r: float, g: float, b: float)`
-
-### Input
-
-Input functions take a string representation of the key. Supported keys include: `"W"`, `"S"`, `"UP"`, `"DOWN"`, `"RIGHT"`, `"LEFT"`.
-
-* `is_key_down(key: string) -> bool`
-* `is_key_up(key: string) -> bool`
-* `is_key_pressed(key: string) -> bool`
-* `is_key_pressed_repeat(key: string) -> bool`
-
-### Error Handling
-
-Talu features an active panic-catching UI. If your WolfLang script encounters a runtime error, the engine intercepts the crash and renders a red developer console directly on the game screen instead of abruptly closing the window.
+[![Star History Chart](https://api.star-history.com/svg?repos=BombaStudio/Talu&type=Date)](https://star-history.com/#BombaStudio/Talu&Date)

@@ -1,0 +1,2 @@
+config = config.wolf
+run = test.wolf
