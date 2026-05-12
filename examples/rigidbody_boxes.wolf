@@ -1,0 +1,61 @@
+# This example simulates rigidbodies using the physics engine logic
+# Box 1
+let b1_px : float = 400.0
+let b1_py : float = 100.0
+let b1_vy : float = 0.0
+let b1_mass : float = 1.0
+
+# Box 2
+let b2_px : float = 410.0
+let b2_py : float = 300.0
+let b2_vy : float = 0.0
+let b2_mass : float = 2.0
+
+let gravity : float = 500.0
+
+fn start()
+    print("Rigidbody Boxes Simulation Started")
+end
+
+fn update()
+    # Apply gravity to both boxes
+    b1_vy = b1_vy + gravity * deltaTime
+    b1_py = b1_py + b1_vy * deltaTime
+
+    b2_vy = b2_vy + gravity * deltaTime
+    b2_py = b2_py + b2_vy * deltaTime
+
+    # Floor collision
+    if b1_py > 500.0
+        b1_py = 500.0
+        b1_vy = b1_vy * -0.5 # Bounce
+    end
+
+    if b2_py > 500.0
+        b2_py = 500.0
+        b2_vy = b2_vy * -0.3 # Heavier box bounces less
+    end
+
+    # Box to Box collision
+    if check_collision(b1_px, b1_py, 50.0, 50.0, b2_px, b2_py, 80.0, 80.0)
+        # Simple elastic-ish collision response
+        let temp : float = b1_vy
+        b1_vy = b2_vy * 0.5
+        b2_vy = temp * 0.5
+        
+        # Separate them to prevent sticking
+        if b1_py < b2_py
+            b1_py = b2_py - 50.1
+        end
+        if b1_py > b2_py
+            b2_py = b1_py - 80.1
+        end
+    end
+
+    # Draw Boxes
+    drawRect(b1_px, b1_py, 50.0, 50.0, 255.0, 0.0, 0.0) # Red box
+    drawRect(b2_px, b2_py, 80.0, 80.0, 0.0, 0.0, 255.0) # Blue box
+    
+    # Draw Floor
+    drawRect(0.0, 550.0, 800.0, 50.0, 150.0, 150.0, 150.0)
+end

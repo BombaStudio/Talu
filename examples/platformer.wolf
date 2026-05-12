@@ -1,0 +1,46 @@
+let playerX : float = 100.0
+let playerY : float = 500.0
+let velY : float = 0.0
+let isGrounded : bool = false
+
+let gravity : float = 800.0
+let jumpForce : float = -400.0
+let speed : float = 200.0
+
+fn start()
+    print("Platformer Example Loaded")
+end
+
+fn update()
+    # Horizontal Movement
+    if is_key_down("A")
+        playerX = playerX - speed * deltaTime
+    end
+    if is_key_down("D")
+        playerX = playerX + speed * deltaTime
+    end
+
+    # Gravity and Jumping
+    velY = velY + gravity * deltaTime
+    playerY = playerY + velY * deltaTime
+
+    # Floor collision (Simple Y-clamp)
+    if playerY > 500.0
+        playerY = 500.0
+        velY = 0.0
+        isGrounded = true
+    end
+
+    if isGrounded
+        if is_key_pressed("SPACE")
+            velY = jumpForce
+            isGrounded = false
+        end
+    end
+
+    # Draw Player
+    drawRect(playerX, playerY, 40.0, 40.0, 0.0, 255.0, 0.0)
+    
+    # Draw Floor
+    drawRect(0.0, 540.0, 800.0, 60.0, 100.0, 100.0, 100.0)
+end

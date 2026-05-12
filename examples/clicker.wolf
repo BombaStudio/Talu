@@ -1,0 +1,35 @@
+let score : int = 0
+let circleX : float = 400.0
+let circleY : float = 300.0
+let circleRadius : float = 50.0
+
+fn start()
+    print("Clicker Game Started!")
+end
+
+fn update()
+    # Draw the target
+    drawCircle(circleX, circleY, circleRadius, 0.0, 150.0, 255.0)
+    
+    # Check for click
+    if is_mouse_button_pressed(0)
+        let mx : float = get_mouse_x()
+        let my : float = get_mouse_y()
+        
+        # Simple distance check for circle click
+        let dx : float = mx - circleX
+        let dy : float = my - circleY
+        let distSq : float = dx * dx + dy * dy
+        
+        if distSq < circleRadius * circleRadius
+            score = score + 1
+            print("Score: " + score)
+            
+            # Move to random position (simplified)
+            circleX = random_float(100.0, 700.0)
+            circleY = random_float(100.0, 500.0)
+        end
+    end
+    
+    # Display score (placeholder as we don't have drawText yet, using print)
+end

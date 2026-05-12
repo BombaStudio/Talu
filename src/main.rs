@@ -13,7 +13,6 @@ use engine::draw::{draw_register, Shapes};
 use engine::input::input as input_register;
 
 use setup::cli;
-use setup::get_files;
 
 
 fn main() {
@@ -21,15 +20,15 @@ fn main() {
     let draw_list: Arc<Mutex<Vec<Shapes>>> = Arc::new(Mutex::new(vec![]));
     let mut engine : WolfEngine = WolfEngine::new();
 
-    let mut game_config = std::fs::read_to_string(&config_path).map_err(|_| "Config read failed").expect("Config read failed");
-    engine.run(&game_config);
+    let game_config = std::fs::read_to_string(&config_path).map_err(|_| "Config read failed").expect("Config read failed");
+    engine.run(&game_config).expect("Config script failed");
 
-    let mut screen_size_x = opt_to_i32(engine.get_int("screen_size_x"));
-    let mut screen_size_y = opt_to_i32(engine.get_int("screen_size_y"));
+    let screen_size_x = opt_to_i32(engine.get_int("screen_size_x"));
+    let screen_size_y = opt_to_i32(engine.get_int("screen_size_y"));
 
     let t : Option<String> = engine.get_str("title");
 
-    let mut title : &str = get_str_slice(&t);
+    let title : &str = get_str_slice(&t);
 
     let (mut rl, thread) = raylib::init()
         .size(screen_size_x, screen_size_y)
@@ -38,27 +37,29 @@ fn main() {
 
 
     let code = std::fs::read_to_string(&run_path).map_err(|_| "Run script read failed").expect("Run script read failed");
-    engine.run(&code);
-    let mut last_frame_time = std::time::Instant::now();
-    engine.get_fn("start", vec![]);
+    
+    // Register functions BEFORE running the script
     draw_register(&mut engine, draw_list.clone());
     input_register(&mut engine);
+    crate::engine::physics::physics_register(&mut engine);
     engine.push_fn("floatToInt", |args| {
         if let Some(Token::Float(f)) = args.get(0) {
             return Token::Integer(*f as i64);
         }
         Token::Integer(0)
     });
-    // Add this at the top of your file if it's not there:
-    // use std::panic;
 
+    engine.run(&code).expect("Main script failed");
+    let mut last_frame_time = std::time::Instant::now();
+    let _ = engine.run("start()");
+    
     // 1. Create variables to hold the crash state
     let mut script_crashed = false;
     let mut crash_message = String::new();
 
     while !rl.window_should_close() {
         let mut d = rl.begin_drawing(&thread);
-        d.clear_background(Color::RAYWHITE);
+        d.clear_background(Color::BLACK); 
 
         let now = std::time::Instant::now();
         let delta_time: f64 = now.duration_since(last_frame_time).as_secs_f64();
@@ -68,10 +69,13 @@ fn main() {
         
         // 2. Only run the script if it hasn't crashed yet
         if !script_crashed {
+            // Clear draw list for the new frame
+            draw_list.lock().unwrap().clear();
+
             // 3. Wrap the engine call in catch_unwind
             let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                draw_list.lock().unwrap().clear();
-                engine.get_fn("update", vec![]);
+                // Using run("update()") because it's more reliable in some versions of WolfLang
+                engine.run("update()")
             }));
 
             // 4. Check if a panic was caught
@@ -79,14 +83,16 @@ fn main() {
                 script_crashed = true;
                 
                 // Try to extract the panic message
-                crash_message = if let Some(s) = panic_err.downcast_ref::<&str>() {
-                    s.to_string()
+                if let Some(s) = panic_err.downcast_ref::<&'static str>() {
+                    crash_message = s.to_string();
                 } else if let Some(s) = panic_err.downcast_ref::<String>() {
-                    s.clone()
+                    crash_message = s.clone();
                 } else {
-                    "Unknown script panic".to_string()
-                };
+                    crash_message = "Unknown script panic".to_string();
+                }
             }
+
+            // Draw the shapes collected during the update
             let shapes = draw_list.lock().unwrap();
             for shape in shapes.iter() {
                 match shape {
@@ -94,30 +100,7 @@ fn main() {
                     Shapes::Rectangle { pos, size, col } => d.draw_rectangle_v(pos, size, col),
                     Shapes::Line { start, end, col } => d.draw_line_v(start, end, col),
                 }
-
             }
-            // for shape in shapes.iter() {
-            //     match shape {
-            //         Shapes::Rectangle { pos, size, col } => {
-            //             println!(
-            //                 "[RECT] pos({}, {}) size({}, {}) color({}, {}, {})",
-            //                 pos.x, pos.y, size.x, size.y, col.r, col.g, col.b
-            //             );
-            //         }
-            //         Shapes::Circle { pos, rad, col } => {
-            //             println!(
-            //                 "[CIRCLE] pos({}, {}) rad({}) color({}, {}, {})",
-            //                 pos.x, pos.y, rad, col.r, col.g, col.b
-            //             );
-            //         }
-            //         Shapes::Line { start, end, col } => {
-            //             println!(
-            //                 "[LINE] from({}, {}) to({}, {}) color({}, {}, {})",
-            //                 start.x, start.y, end.x, end.y, col.r, col.g, col.b
-            //             );
-            //         }
-            //     }
-            // }
         }
 
         // 5. Draw the error screen if a crash happened

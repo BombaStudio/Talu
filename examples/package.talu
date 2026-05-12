@@ -1,2 +1,2 @@
 config = config.wolf
-run = test.wolf
+run = rigidbody_boxes.wolf
