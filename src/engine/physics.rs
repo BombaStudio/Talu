@@ -1,48 +1,4 @@
-use std::ops::{Add, Sub, Mul, AddAssign};
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Vector2 {
-    pub x: f32,
-    pub y: f32,
-}
-
-impl Vector2 {
-    pub fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
-    }
-
-    pub fn zero() -> Self {
-        Self { x: 0.0, y: 0.0 }
-    }
-}
-
-impl Add for Vector2 {
-    type Output = Self;
-    fn add(self, other: Self) -> Self {
-        Self { x: self.x + other.x, y: self.y + other.y }
-    }
-}
-
-impl AddAssign for Vector2 {
-    fn add_assign(&mut self, other: Self) {
-        self.x += other.x;
-        self.y += other.y;
-    }
-}
-
-impl Sub for Vector2 {
-    type Output = Self;
-    fn sub(self, other: Self) -> Self {
-        Self { x: self.x - other.x, y: self.y - other.y }
-    }
-}
-
-impl Mul<f32> for Vector2 {
-    type Output = Self;
-    fn mul(self, scalar: f32) -> Self {
-        Self { x: self.x * scalar, y: self.y * scalar }
-    }
-}
+use crate::engine::utils::vector::Vector2;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Collider {
