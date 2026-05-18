@@ -1,75 +1,264 @@
-# 📘 Talu Engine User Manual
+# 📘 Talu Engine User Guide
 
-Welcome to the Talu Engine documentation. This guide will help you understand how to use the engine's scripting API and project structure.
+Talu Engine is a game engine designed to run small games written in the Wolf scripting language. This guide explains the project structure, basic Wolf syntax, and the engine API step by step.
 
 ## 📁 Project Structure
 
-A Talu game directory must contain at least these three files:
+A Talu game folder must contain at least these three files:
 
 ### 1. `package.talu`
-The manifest file for your game.
+The game manifest. It specifies which files are used for config and run.
+
 ```talu
 config = config.wolf
 run = main.wolf
 ```
 
 ### 2. `config.wolf`
-Initializes the engine state.
+Contains engine startup settings. This file is executed first in `main.rs`.
+
 ```wolf
 let screen_size_x : int = 800
 let screen_size_y : int = 600
 let title : string = "My Awesome Game"
 ```
 
-### 3. Entry Script (`main.wolf`)
-Contains your game logic. It must define two functions:
-- `fn start()`: Runs once at startup.
-- `fn update()`: Runs every frame.
+Supported config variables:
+- `screen_size_x`: Screen width.
+- `screen_size_y`: Screen height.
+- `title`: Window title.
 
----
+### 3. `main.wolf`
+The main script containing game logic. It should include at least two functions:
+- `fn start()`: Runs once when the game starts.
+- `fn update()`: Runs once every frame.
 
-## 📜 WolfLang Scripting API
+## 🧩 Basic Wolf Syntax
 
-### 🎨 Rendering
-Colors use RGB values from `0.0` to `255.0`.
+### Variable Declaration
+
+In Wolf, variables are declared with the `let` keyword. Type annotations are required.
+
+```wolf
+let x : float = 100.0
+let y : int = 5
+let isAlive : bool = true
+let name : string = "Player"
+```
+
+### Function Declaration
+
+Every function starts with `fn` and ends with `end`.
+
+```wolf
+fn start()
+    print("Game started")
+end
+
+fn update()
+    # Put per-frame code here
+end
+```
+
+### Conditions
+
+Using `if`:
+
+```wolf
+if is_key_down("A")
+    x = x - 1.0
+end
+```
+
+`else` is also supported:
+
+```wolf
+if is_key_down("A")
+    x = x - 1.0
+else
+    x = x + 1.0
+end
+```
+
+### Comments
+
+Wolf uses `#` for comments.
+
+```wolf
+# This is a comment
+```
+
+### String Concatenation
+
+Strings can be concatenated with the `+` operator.
+
+```wolf
+let score : int = 10
+print("Score: " + score)
+```
+
+## 🚀 Startup and Execution Flow
+
+In `main.rs`:
+- `config.wolf` is executed first,
+- then `main.wolf` is loaded,
+- `start()` is called,
+- `update()` is called every frame.
+
+If a panic occurs inside the script, the engine shows a red error bar and stops calling `update()`.
+
+## 🎨 Rendering API
+
+Talu provides four drawing functions:
 
 - `drawRect(x, y, width, height, r, g, b)`
 - `drawCircle(x, y, radius, r, g, b)`
 - `drawLine(x1, y1, x2, y2, r, g, b)`
+- `drawTexture(texture_id, x, y, r, g, b)`
 
-### 🕹️ Input Handling
-Key names must be **uppercase** (e.g., `"SPACE"`, `"W"`, `"LEFT"`).
+Color values range from 0.0 to 255.0.
 
-- `is_key_down(key: string) -> bool`: Returns true if key is held.
-- `is_key_pressed(key: string) -> bool`: Returns true if key was just pressed.
-- `is_mouse_button_pressed(button: int) -> bool`: `0` for left click, `1` for right click.
+### Example: Draw a Rectangle
+
+```wolf
+fn update()
+    drawRect(100.0, 150.0, 120.0, 60.0, 255.0, 0.0, 0.0)
+end
+```
+
+### Example: Draw a Circle
+
+```wolf
+fn update()
+    drawCircle(400.0, 300.0, 50.0, 0.0, 150.0, 255.0)
+end
+```
+
+### Example: Draw a Line
+
+```wolf
+fn update()
+    drawLine(100.0, 100.0, 700.0, 100.0, 255.0, 255.0, 0.0)
+end
+```
+
+### Example: Draw a Texture
+
+PNG files in the `assets/` folder are automatically loaded and can be drawn with `drawTexture`.
+
+```wolf
+# texture_id corresponds to the order of files in the assets folder.
+fn update()
+    drawTexture(1.0, 200.0, 200.0, 255.0, 255.0, 255.0)
+end
+```
+
+> Note: `texture_id` must be an integer, but in Wolf it is passed as a `float`.
+
+## 🕹️ Input API
+
+### Keyboard Controls
+
+Key names are passed as uppercase strings.
+
+- `is_key_down(key: string) -> bool`
+- `is_key_pressed(key: string) -> bool`
+- `is_key_pressed_repeat(key: string) -> bool`
+- `is_key_up(key: string) -> bool`
+
+```wolf
+if is_key_down("A")
+    playerX = playerX - speed * deltaTime
+end
+
+if is_key_pressed("SPACE")
+    jump = true
+end
+```
+
+`is_key_down` returns true while the key is held.
+`is_key_pressed` returns true only once when the key is pressed.
+`is_key_pressed_repeat` returns true on repeated key presses.
+`is_key_up` checks if the key was released.
+
+### Mouse Controls
+
+- `is_mouse_button_pressed(button: int) -> bool`
+  - `0`: left click
+  - `1`: right click
 - `get_mouse_x() -> float`
 - `get_mouse_y() -> float`
 
-### ⚖️ Physics
-- `check_collision(x1, y1, w1, h1, x2, y2, w2, h2) -> bool`: Checks collision between two rectangles.
+```wolf
+if is_mouse_button_pressed(0)
+    let mx : float = get_mouse_x()
+    let my : float = get_mouse_y()
+end
+```
 
-### 🛠️ Utilities
-- `print(message)`: Log to the terminal.
-- `random_float(min, max) -> float`: Returns a random float in range.
-- `deltaTime`: A global variable containing the time passed since the last frame (in seconds).
+## ⚖️ Physics and Collision
 
----
+- `check_collision(x1, y1, w1, h1, x2, y2, w2, h2) -> bool`
 
-## 💡 Tips & Best Practices
+This function checks whether two rectangles are colliding.
 
-1. **Comments**: Use `#` for comments. `//` is not supported.
-2. **Types**: Be explicit with types when declaring variables (e.g., `let x : float = 0.0`).
-3. **Debugging**: If your script crashes, look at the red console on the screen. It will tell you the exact line and error.
-4. **Examples**: Check the `examples/` directory for full implementations:
-   - `examples/platformer`: Basic movement and jumping.
-   - `examples/rigidbody_boxes`: Physics and collision response.
-   - `examples/clicker`: Mouse interaction and score management.
+```wolf
+if check_collision(x1, y1, w1, h1, x2, y2, w2, h2)
+    print("Collision detected")
+end
+```
 
----
+## 🛠️ Utility Functions
 
-## 🛠️ Building & Running
-From the engine root:
+- `print(message)`: Prints a message to the console.
+- `random_float(min, max) -> float`: Returns a random floating-point number in the given range.
+- `deltaTime`: Time passed since the last frame, in seconds.
+- `floatToInt(value)`: Converts a float to an integer.
+
+### Example: Random Position
+
+```wolf
+let x : float = random_float(100.0, 700.0)
+let y : float = random_float(50.0, 550.0)
+```
+
+### Example: Move with `deltaTime`
+
+```wolf
+let speed : float = 200.0
+let x : float = 100.0
+
+fn update()
+    if is_key_down("D")
+        x = x + speed * deltaTime
+    end
+end
+```
+
+Using `deltaTime` reduces frame rate dependency in motion.
+
+## 🧠 Debugging
+
+If a script error occurs in `main.rs`, the engine shows a red error bar with the message. Once an error occurs, `update()` is not called again until the script is fixed.
+
+## 📁 Asset Loading (`assets` folder)
+
+The `src/engine/asset_pipeline.rs` file automatically loads `.png` files from the `assets/` folder. Files are numbered alphabetically:
+
+- First PNG file is `texture_id = 1`
+- Second PNG file is `texture_id = 2`
+
+You can draw them with `drawTexture`.
+
+## 🛠️ Running the Game
+
+From the project root, use:
+
 ```bash
 cargo run examples/your_folder
 ```
+
+Examples:
+- `cargo run examples/clicker`
+- `cargo run examples/platformer`
+- `cargo run examples/rigidbody_boxes`

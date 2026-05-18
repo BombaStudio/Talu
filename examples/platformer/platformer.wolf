@@ -38,8 +38,8 @@ fn update()
         end
     end
 
-    # Draw Player
-    drawRect(playerX, playerY, 40.0, 40.0, 0.0, 255.0, 0.0)
+    # Draw Player as texture
+    drawTexture(1.0, playerX, playerY, 255.0, 255.0, 255.0)
     
     # Draw Floor
     drawRect(0.0, 540.0, 800.0, 60.0, 100.0, 100.0, 100.0)
