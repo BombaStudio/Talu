@@ -1,0 +1,6 @@
+let local_pkg_val : int = 100
+
+fn draw_local_box(x: float, y: float)
+    # Draw a blue rectangle to represent local package loading
+    drawRect(x, y, 150.0, 150.0, 0.0, 102.0, 204.0)
+end

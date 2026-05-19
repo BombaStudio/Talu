@@ -1,8 +1,35 @@
-target
+# --- Rust Related ---
+/target
+/Cargo.lock
 **/*.rs.bk
-Cargo.lock
-/.vscode
-/.idea
+
+# --- Shared Libraries & Binaries ---
+*.so
+*.dll
+*.dylib
+*.exe
+
+# --- IDEs & Editors ---
+# VSCode
+.vscode/
+# IntelliJ / CLion
+.idea/
+*.iml
+# Vim
+*.swp
+*~
+
+# --- Logs & Temporary Files ---
+*.log
+platformer.log
+run.log
+tmp/
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+# --- Project Specific Artifacts ---
 raylib-test/test_out/*
 !raylib-test/test_out/.gitkeep
 raylib-test/storage.data

@@ -5,13 +5,20 @@ All notable changes to the Talu Engine will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Manifest-Based Plugin System**: Added support for loading Rust dynamic libraries via the `plugins` key in `package.talu`. The engine now handles OS-specific prefixes and extensions automatically.
+- **Native WolfLang Imports**: Integrated WolfLang's native `import "file.wolf" as alias` feature, deprecating the legacy auto-loading of `.wolf` files from the packages directory.
 - **Documentation Improvements**: Updated the user guide and added tutorial documentation for WolfLang usage.
 
 ### Changed
 - **Asset Loading Logic**: Refactored `load_assets` to remove redundant asset directory path handling and rely on explicit asset paths.
+- **Utility Functions**: Consolidated token parsing logic into a central `get_float` helper, removing redundant and logically flawed utility functions like `float_to_int`.
+- **Plugin ABI Handling**: Shifted dynamic library registration to use `extern "C"` and raw pointers (`*mut WolfEngine`) to mitigate segmentation faults caused by cross-ABI Rust object sharing.
 
 ### Fixed
+- **Plugin Resolution**: Fixed a critical bug where plugin filenames were missing the dot before the extension (e.g., `libpluginso` instead of `libplugin.so`).
+- **Path Searching**: Improved absolute path resolution so the engine can reliably find plugins both in the project directory and the engine root, regardless of the working directory.
 - **Texture Lookup**: Improved texture registration so runtime asset names can be used directly by scripts.
+
 
 ## [v0.1.0] - 2026-05-12
 

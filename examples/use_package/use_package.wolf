@@ -1,0 +1,12 @@
+# Import test
+import "packages/my_wolf_lib.wolf" as my_wolf
+
+fn start()
+    print("=== Talu Engine Final Test ===")
+    print("Wolf package loaded.")
+end
+
+fn update()
+    # 7 parametre: x, y, w, h, r, g, b
+    drawRect(325.0, 200.0, 150.0, 150.0, 0.0, 102.0, 204.0)
+end

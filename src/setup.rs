@@ -1,30 +1,21 @@
+use std::collections::HashMap;
 use std::env;
 use std::path::Path;
 
-pub fn get_files(package_content: &str) -> [(&str, &str); 2] {
-    let mut config_file = "";
-    let mut run_file = "";
+pub fn get_manifest(content: &str) -> HashMap<String, String> {
+    let mut manifest = HashMap::new();
 
-    for line in package_content.lines() {
+    for line in content.lines() {
         let parts: Vec<&str> = line.split('=').map(|s| s.trim()).collect();
-        
         if parts.len() == 2 {
-            match parts[0] {
-                "config" => config_file = parts[1],
-                "run" => run_file = parts[1],
-                _ => {} // Ignore unknown keys
-            }
+            manifest.insert(parts[0].to_string(), parts[1].to_string());
         }
     }
 
-    // Return the array of string slices
-    [
-        ("config", config_file),
-        ("run", run_file)
-    ]
+    manifest
 }
 
-pub fn cli() -> Option<(String, String)> {
+pub fn cli() -> Option<(String, String, Vec<String>)> {
     let args: Vec<String> = env::args().collect();
 
     let target_dir = if args.len() > 1 {
@@ -45,12 +36,12 @@ pub fn cli() -> Option<(String, String)> {
 
     let file = std::fs::read_to_string("package.talu").expect("Could not find package.talu");
 
-    let files = get_files(&file);
-    let mut config = "";
-    let mut run = "";
-    for (key, val) in files {
-        if key == "config" { config = val; }
-        if key == "run" { run = val; }
-    }
-    Some((config.to_string(), run.to_string()))
+    let manifest = get_manifest(&file);
+    let config = manifest.get("config").map(|s| s.to_string()).unwrap_or_default();
+    let run = manifest.get("run").map(|s| s.to_string()).unwrap_or_default();
+    let plugins = manifest.get("plugins")
+        .map(|s| s.split(',').map(|p| p.trim().to_string()).collect())
+        .unwrap_or_default();
+
+    Some((config, run, plugins))
 }

@@ -53,9 +53,27 @@ cargo run examples/clicker
 ## 📖 Usage
 
 A Talu project typically consists of:
-1. `package.talu`: Defines the configuration and entry script.
+1. `package.talu`: Defines the configuration, entry script, and Rust plugins.
 2. `config.wolf`: Window and engine initialization parameters.
 3. `your_script.wolf`: Your game logic (must define `start()` and `update()`).
+
+### The Manifest (`package.talu`)
+```talu
+config = config.wolf
+run = main.wolf
+plugins = my_rust_plugin, another_plugin
+```
+The `plugins` key automatically resolves and loads platform-specific Rust dynamic libraries (`.so`, `.dll`, `.dylib`) from your `packages/` directory or the engine root.
+
+### Importing Wolf Packages
+Talu fully supports WolfLang's native module system.
+```wolf
+import "packages/my_math.wolf" as math
+
+fn update()
+    let res : int = math::add(5, 10)
+end
+```
 
 Check out the [User Manual](docs/manual.md) for a deep dive into the engine's capabilities.
 

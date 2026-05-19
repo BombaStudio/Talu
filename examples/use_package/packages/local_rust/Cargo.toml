@@ -1,0 +1,10 @@
+[package]
+name = "local_rust"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wolflang = { git = "https://github.com/islamfazliyev/Wolf-Lang" }

@@ -7,12 +7,14 @@ Talu Engine is a game engine designed to run small games written in the Wolf scr
 A Talu game folder must contain at least these three files:
 
 ### 1. `package.talu`
-The game manifest. It specifies which files are used for config and run.
+The game manifest. It specifies which files are used for config, run, and defines which Rust plugins to load.
 
 ```talu
 config = config.wolf
 run = main.wolf
+plugins = local_rust, rust_test
 ```
+*Note: The `plugins` key is optional and is used to load Rust dynamic libraries.*
 
 ### 2. `config.wolf`
 Contains engine startup settings. This file is executed first in `main.rs`.
@@ -32,6 +34,32 @@ Supported config variables:
 The main script containing game logic. It should include at least two functions:
 - `fn start()`: Runs once when the game starts.
 - `fn update()`: Runs once every frame.
+
+## 📦 Package Management
+
+Talu supports extending its capabilities through two types of packages:
+
+### Wolf Packages
+You can import other Wolf language scripts using the native `import` syntax. This helps keep your codebase modular.
+
+```wolf
+import "packages/math.wolf" as math
+
+fn start()
+    let result : int = math::add(5, 10)
+    print("Result: " + result)
+end
+```
+*(Note: As WolfLang is under active development, the syntax and stability of module member access may vary).*
+
+### Rust Plugins
+High-performance or system-level features can be written in Rust. Compile them as dynamic libraries (`.so`, `.dll`, `.dylib`) and place them in the `packages/` directory.
+
+To load a Rust plugin, add its name to `package.talu` (without the `lib` prefix or extension):
+```talu
+plugins = my_rust_plugin
+```
+The engine will automatically resolve the correct filename for the current operating system, load it via `libloading`, and call its `register_talu_plugin` function.
 
 ## 🧩 Basic Wolf Syntax
 
@@ -213,7 +241,6 @@ end
 - `print(message)`: Prints a message to the console.
 - `random_float(min, max) -> float`: Returns a random floating-point number in the given range.
 - `deltaTime`: Time passed since the last frame, in seconds.
-- `floatToInt(value)`: Converts a float to an integer.
 
 ### Example: Random Position
 

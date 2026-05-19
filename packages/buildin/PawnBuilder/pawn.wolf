@@ -1,0 +1,3 @@
+fn pawn_hello()
+    print("Hello from PawnBuilder package!")
+end

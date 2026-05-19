@@ -3,3 +3,5 @@ pub mod input;
 pub mod utils;
 pub mod asset_pipeline;
 pub mod physics;
+pub mod packages;
+

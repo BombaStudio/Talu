@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 use wolflang::WolfEngine;
@@ -17,7 +16,7 @@ use crate::engine::asset_pipeline::load_assets;
 use setup::cli;
 
 fn main() {
-    let (config_path, run_path) = cli().expect("Setup failed. Check package.talu and directory.");
+    let (config_path, run_path, plugins) = cli().expect("Setup failed. Check package.talu and directory.");
     let draw_list: Arc<Mutex<Vec<Shapes>>> = Arc::new(Mutex::new(vec![]));
     let mut engine : WolfEngine = WolfEngine::new();
 
@@ -52,9 +51,14 @@ fn main() {
         Token::Integer(0)
     });
 
+    // Load custom packages (both engine packages and project packages)
+    let _plugins = crate::engine::packages::load_packages(&mut engine, plugins);
+
     engine.run(&code).expect("Main script failed");
     let mut last_frame_time = std::time::Instant::now();
-    let _ = engine.run("start()");
+    if let Err(e) = engine.run("start()") {
+        eprintln!("Error running start(): {:?}", e);
+    }
 
     // 1. Create variables to hold the crash state
     let mut script_crashed = false;
@@ -81,18 +85,23 @@ fn main() {
                 engine.run("update()")
             }));
 
-            // 4. Check if a panic was caught
-            if let Err(panic_err) = result {
-                script_crashed = true;
-
-                // Try to extract the panic message
-                if let Some(s) = panic_err.downcast_ref::<&'static str>() {
-                    crash_message = s.to_string();
-                } else if let Some(s) = panic_err.downcast_ref::<String>() {
-                    crash_message = s.clone();
-                } else {
-                    crash_message = "Unknown script panic".to_string();
+            // 4. Check if a panic or evaluation error occurred
+            match result {
+                Ok(Err(eval_err)) => {
+                    script_crashed = true;
+                    crash_message = format!("Eval Error: {:?}", eval_err);
                 }
+                Err(panic_err) => {
+                    script_crashed = true;
+                    if let Some(s) = panic_err.downcast_ref::<&'static str>() {
+                        crash_message = s.to_string();
+                    } else if let Some(s) = panic_err.downcast_ref::<String>() {
+                        crash_message = s.clone();
+                    } else {
+                        crash_message = "Unknown script panic".to_string();
+                    }
+                }
+                _ => {}
             }
 
             // Draw the shapes collected during the update

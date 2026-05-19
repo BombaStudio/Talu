@@ -11,13 +11,7 @@ pub enum Shapes {
     Texture { pos: Vector2, tex_id: i32, col: Color },
 }
 
-fn get_float(token: Option<&Token>) -> Option<f32> {
-    match token {
-        Some(Token::Float(f)) => Some(*f as f32),
-        Some(Token::Integer(i)) => Some(*i as f32),
-        _ => None,
-    }
-}
+use crate::engine::utils::utils::get_float;
 
 pub fn draw_register(engine: &mut WolfEngine, draw_list: Arc<Mutex<Vec<Shapes>>>) {
     let dl = draw_list.clone();

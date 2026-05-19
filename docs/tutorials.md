@@ -11,6 +11,8 @@ This document explains how to create a Talu Engine game project and understand e
 ```talu
 config = config.wolf
 run = main.wolf
+# Optional: Load Rust dynamic libraries
+# plugins = my_rust_plugin 
 ```
 
 4. `config.wolf` content:
@@ -219,11 +221,12 @@ end
 ## 5. Building Your Own Game
 
 ### Suggested development steps:
-1. Add more variables in `main.wolf`.
-2. Initialize starting state in `start()`.
-3. Separate input, physics, and drawing in `update()`.
-4. Add visual elements with `drawRect` / `drawCircle`.
-5. Use `print` for debugging.
+1. Use `import` to split complex logic into separate `.wolf` files inside a `packages/` directory.
+2. Add more variables in `main.wolf`.
+3. Initialize starting state in `start()`.
+4. Separate input, physics, and drawing in `update()`.
+5. Add visual elements with `drawRect` / `drawCircle`.
+6. Use `print` for debugging.
 
 ### Example: Small game flow
 

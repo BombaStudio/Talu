@@ -24,6 +24,7 @@ impl Collider {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct PhysicsBody {
     pub position: Vector2,
@@ -33,6 +34,7 @@ pub struct PhysicsBody {
     pub collider: Option<Collider>,
 }
 
+#[allow(dead_code)]
 impl PhysicsBody {
     pub fn new(position: Vector2, mass: f32) -> Self {
         Self {
@@ -119,16 +121,18 @@ mod tests {
     }
 }
 pub fn physics_register(engine: &mut wolflang::WolfEngine) {
+    use crate::engine::utils::utils::get_float;
+
     engine.push_fn("check_collision", |args| {
-        let x1 = match args.get(0) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
-        let y1 = match args.get(1) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
-        let w1 = match args.get(2) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
-        let h1 = match args.get(3) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
+        let x1 = get_float(args.get(0)).unwrap_or(0.0);
+        let y1 = get_float(args.get(1)).unwrap_or(0.0);
+        let w1 = get_float(args.get(2)).unwrap_or(0.0);
+        let h1 = get_float(args.get(3)).unwrap_or(0.0);
         
-        let x2 = match args.get(4) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
-        let y2 = match args.get(5) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
-        let w2 = match args.get(6) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
-        let h2 = match args.get(7) { Some(wolflang::tokens::Token::Float(f)) => *f as f32, Some(wolflang::tokens::Token::Integer(i)) => *i as f32, _ => return wolflang::tokens::Token::Boolean(false) };
+        let x2 = get_float(args.get(4)).unwrap_or(0.0);
+        let y2 = get_float(args.get(5)).unwrap_or(0.0);
+        let w2 = get_float(args.get(6)).unwrap_or(0.0);
+        let h2 = get_float(args.get(7)).unwrap_or(0.0);
 
         let c1 = Collider::new(x1, y1, w1, h1);
         let c2 = Collider::new(x2, y2, w2, h2);

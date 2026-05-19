@@ -1,0 +1,3 @@
+fn hello_from_wolf()
+    print(">>> Hello! This message comes from a Wolf language package!")
+end

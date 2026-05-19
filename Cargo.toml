@@ -8,3 +8,5 @@ wolflang = { git = "https://github.com/islamfazliyev/Wolf-Lang" }
 raylib = "5.5"
 rand = "0.8"
 lazy_static = "1.5.0"
+libloading = "0.8"
+
