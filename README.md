@@ -62,6 +62,7 @@ Check out the [User Manual](docs/manual.md) for a deep dive into the engine's ca
 ## 📚 Documentation & History
 
 - 📘 **[User Manual](docs/manual.md)**: Detailed API references, project structure, and scripting guide.
+- 📘 **[Tutorials](docs/tutorials.md)**: Step-by-step guides to build your first game with Talu.
 - 📜 **[Changelog](CHANGELOG.md)**: Track all the latest updates, features, and bug fixes.
 - 📂 **[Examples](examples/)**: Explore pre-built projects like the Platformer and Physics simulations.
 

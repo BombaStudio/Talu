@@ -2,6 +2,17 @@
 
 All notable changes to the Talu Engine will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Documentation Improvements**: Updated the user guide and added tutorial documentation for WolfLang usage.
+
+### Changed
+- **Asset Loading Logic**: Refactored `load_assets` to remove redundant asset directory path handling and rely on explicit asset paths.
+
+### Fixed
+- **Texture Lookup**: Improved texture registration so runtime asset names can be used directly by scripts.
+
 ## [v0.1.0] - 2026-05-12
 
 ### Added
