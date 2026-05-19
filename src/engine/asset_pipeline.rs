@@ -7,7 +7,7 @@ pub fn load_assets(rl: &mut RaylibHandle, thread: &RaylibThread) -> HashMap<i32,
     let mut texture_registry = HashMap::new();
     let mut id_counter = 1;
 
-    let asset_dirs = ["assets", "../assets"];
+    let asset_dirs = ["assets"];
     let asset_dir = asset_dirs.iter().find(|dir| Path::new(dir).is_dir());
 
     if let Some(dir) = asset_dir {
