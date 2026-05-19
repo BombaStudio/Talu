@@ -1,6 +1,6 @@
 # --- Rust Related ---
-/target
-/Cargo.lock
+target/
+Cargo.lock
 **/*.rs.bk
 
 # --- Shared Libraries & Binaries ---
