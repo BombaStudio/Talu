@@ -5,6 +5,14 @@ All notable changes to the Talu Engine will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Cargo Workspace**: Restructured the repository into a Cargo workspace with two crates — `talu-engine` (the runtime) and `talu` (the CLI) — sharing a single `target/` directory. Both binaries are built with a single `cargo build --release`.
+- **`talu` CLI**: New command-line tool for managing the full project lifecycle:
+  - `talu new <name>` — Scaffolds a new project with `package.talu`, `config.wolf`, `main.wolf`, `assets/`, and `packages/` directories.
+  - `talu run [path]` — Validates the project and launches the engine binary.
+  - `talu build [path]` — Packages the project for distribution, producing a self-contained `dist/` folder with the engine binary, all scripts, assets, and plugins.
+  - `talu new-plugin <name>` — Scaffolds a new Rust `cdylib` plugin crate with the correct `Cargo.toml` and a `register_talu_plugin` entry point template.
+  - `talu build-plugin [path]` — Compiles a plugin crate in release mode and automatically installs the resulting `.so`/`.dll`/`.dylib` into the project's `packages/` directory.
+- **Plugin Activation**: Uncommented and enabled the `func(engine as *mut WolfEngine)` call in `packages.rs`, so loaded plugins now actually register their functions with the WolfLang engine.
 - **Manifest-Based Plugin System**: Added support for loading Rust dynamic libraries via the `plugins` key in `package.talu`. The engine now handles OS-specific prefixes and extensions automatically.
 - **Native WolfLang Imports**: Integrated WolfLang's native `import "file.wolf" as alias` feature, deprecating the legacy auto-loading of `.wolf` files from the packages directory.
 - **Documentation Improvements**: Updated the user guide and added tutorial documentation for WolfLang usage.

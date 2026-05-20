@@ -21,6 +21,8 @@ Talu is a professional-grade 2D game framework that combines the safety and perf
 - **🎨 Render Primitives**: Draw rectangles, circles, and lines with ease.
 - **🛠️ Developer-First**: Real-time panic-catching UI that prevents crashes and shows debug info.
 - **📦 Modular Packages**: Organize your projects with independent `package.talu` and `config.wolf` setups.
+- **🔧 `talu` CLI**: Full project lifecycle management — scaffold, run, build for distribution, and manage Rust plugins without touching Cargo directly.
+- **🔌 Live Plugin System**: Write engine extensions in Rust (`cdylib`) and load them into any project via `package.talu`. Plugins register custom WolfLang functions at runtime.
 
 ## 🚀 Getting Started
 
@@ -28,7 +30,7 @@ Talu is a professional-grade 2D game framework that combines the safety and perf
 Ensure you have the [Rust toolchain](https://rustup.rs/) installed on your system.
 
 ### 2. Installation
-Clone the repository and build the engine:
+Clone the repository and build both the engine and CLI:
 
 ```bash
 git clone https://github.com/BombaStudio/Talu.git
@@ -36,19 +38,34 @@ cd Talu
 cargo build --release
 ```
 
-### 3. Running Examples
-Talu comes with several pre-built examples to get you started:
+This produces two binaries in `target/release/`: `talu-engine` (the runtime) and `talu` (the CLI). Add them to your `PATH` or use them directly from `target/release/`.
+
+### 3. Creating a New Project
 
 ```bash
-# Run the platformer example
-cargo run examples/platformer
-
-# Run the physics simulation
-cargo run examples/rigidbody_boxes
-
-# Run the clicker game
-cargo run examples/clicker
+talu new mygame
+cd mygame
+talu run
 ```
+
+`talu new` scaffolds a ready-to-run project with `package.talu`, `config.wolf`, `main.wolf`, and empty `assets/` and `packages/` directories.
+
+### 4. Running Examples
+Talu comes with several pre-built examples:
+
+```bash
+talu run engine/examples/platformer
+talu run engine/examples/rigidbody_boxes
+talu run engine/examples/clicker
+```
+
+### 5. Building for Distribution
+
+```bash
+talu build ./mygame
+```
+
+Produces a self-contained `mygame/dist/` folder with the engine binary, all scripts, assets, and plugins — ready to zip and share.
 
 ## 📖 Usage
 
@@ -76,6 +93,35 @@ end
 ```
 
 Check out the [User Manual](docs/manual.md) for a deep dive into the engine's capabilities.
+
+### Rust Plugins
+
+Plugins let you extend WolfLang with custom functions written in Rust. Scaffold and build one with the CLI:
+
+```bash
+talu new-plugin my_plugin
+cd my_plugin
+# edit src/lib.rs to register your functions
+talu build-plugin .
+```
+
+Then reference it in your project's `package.talu`:
+
+```talu
+config = config.wolf
+run = main.wolf
+plugins = my_plugin
+```
+
+## 🖥️ CLI Reference
+
+| Command | Description |
+| :--- | :--- |
+| `talu new <name>` | Scaffold a new project |
+| `talu run [path]` | Run a project (default: current directory) |
+| `talu build [path]` | Package a project into a distributable `dist/` folder |
+| `talu new-plugin <name>` | Scaffold a new Rust plugin crate |
+| `talu build-plugin [path]` | Compile and install a plugin into `packages/` |
 
 ## 📚 Documentation & History
 
