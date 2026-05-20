@@ -65,7 +65,7 @@ impl PhysicsBody {
         // Euler integration
         self.velocity += self.acceleration * delta_time;
         self.position += self.velocity * delta_time;
-        
+        [Identifier]
         // Update collider position if it exists
         if let Some(ref mut collider) = self.collider {
             collider.position = self.position;

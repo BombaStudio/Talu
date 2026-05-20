@@ -1,0 +1,13 @@
+struct Component
+  start : int
+  update : int
+end
+
+imp Component
+  fn start_component()
+    return start
+  end
+  fn start_component()
+    return update
+  end
+end
