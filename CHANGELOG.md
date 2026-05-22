@@ -6,6 +6,7 @@ All notable changes to the Talu Engine will be documented in this file.
 
 ### Added
 - **Cargo Workspace**: Restructured the repository into a Cargo workspace with two crates — `talu-engine` (the runtime) and `talu` (the CLI) — sharing a single `target/` directory. Both binaries are built with a single `cargo build --release`.
+- **Circular Math Helpers**: Exposed `shape_pos_x(radius, angle)` and `shape_pos_y(radius, angle)` utility functions to WolfLang to easily calculate positions on a circle (using degrees).
 - **`talu` CLI**: New command-line tool for managing the full project lifecycle:
   - `talu new <name>` — Scaffolds a new project with `package.talu`, `config.wolf`, `main.wolf`, `assets/`, and `packages/` directories.
   - `talu run [path]` — Validates the project and launches the engine binary.

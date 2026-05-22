@@ -240,6 +240,8 @@ end
 
 - `print(message)`: Prints a message to the console.
 - `random_float(min, max) -> float`: Returns a random floating-point number in the given range.
+- `shape_pos_x(radius, theta) -> float`: Calculates the X coordinate on a circle with the given radius and angle (in degrees).
+- `shape_pos_y(radius, theta) -> float`: Calculates the Y coordinate on a circle with the given radius and angle (in degrees).
 - `deltaTime`: Time passed since the last frame, in seconds.
 
 ### Example: Random Position

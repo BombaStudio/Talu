@@ -1,15 +1,27 @@
 let px : float = 400.0
 let py : float = 300.0
 let speed : float = 100.0
+let angle : float = 0.0
+
 fn start()
     
 end
 
-
 fn update()
+    angle = angle + 100.0 * deltaTime
+    if angle >= 360.0
+        angle = angle - 360.0
+    end
+
+    let orbit_x : float = px + shape_pos_x(100.0, angle)
+    let orbit_y : float = py + shape_pos_y(100.0, angle)
+
     drawCircle(px, py, 20.0, 131.0, 47.0, 47.0)
+    drawCircle(orbit_x, orbit_y, 10.0, 47.0, 131.0, 47.0)
+    
     drawRect(100.0, 100.0, 20.0, 20.0, 131.0, 47.0, 47.0)
     drawRect(150.0, 300.0, 20.0, 20.0, 131.0, 47.0, 47.0)
+
     if is_key_down("W")
         py = py - speed * deltaTime
     end

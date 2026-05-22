@@ -1,4 +1,5 @@
 use crate::engine::utils::vector::Vector2;
+use rand::Rng;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Collider {
@@ -138,5 +139,23 @@ pub fn physics_register(engine: &mut wolflang::WolfEngine) {
         let c2 = Collider::new(x2, y2, w2, h2);
         
         wolflang::tokens::Token::Boolean(c1.is_colliding(&c2))
+    });
+    //after i will move these to utils.rs
+    engine.push_fn("random_float", |args|{
+        let mut rng = rand::thread_rng();
+        let min = get_float(args.get(0)).unwrap_or(0.0);
+        let max = get_float(args.get(1)).unwrap_or(0.0);
+        let random_float = rng.gen_range(min..max);
+        wolflang::tokens::Token::Float(random_float as f64)
+    });
+    engine.push_fn("shape_pos_x", |args|{
+        let radius = get_float(args.get(0)).unwrap_or(0.0);
+        let tetha = get_float(args.get(1)).unwrap_or(0.0);
+        wolflang::tokens::Token::Float((radius * tetha.to_radians().cos()) as f64)
+    });
+    engine.push_fn("shape_pos_y", |args|{
+        let radius = get_float(args.get(0)).unwrap_or(0.0);
+        let tetha = get_float(args.get(1)).unwrap_or(0.0);
+        wolflang::tokens::Token::Float((radius * tetha.to_radians().sin()) as f64)
     });
 }

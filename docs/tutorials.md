@@ -252,3 +252,35 @@ end
 ```
 
 This tutorial covers the basic steps to develop a game with Talu Engine. Explore the ready-made examples in the `examples/` folder to expand your own project.
+
+## 6. Circular Motion with `shape_pos`
+
+You can calculate points on a circle using `shape_pos_x` and `shape_pos_y`. This is useful for orbiting objects or circular patterns.
+
+### Example: Orbiting a central point
+
+```wolf
+let center_x : float = 400.0
+let center_y : float = 300.0
+let angle : float = 0.0
+
+fn update()
+    # Increase angle over time
+    angle = angle + 100.0 * deltaTime
+    if angle >= 360.0
+        angle = angle - 360.0
+    end
+
+    # Calculate orbiting position
+    let orbit_x : float = center_x + shape_pos_x(100.0, angle)
+    let orbit_y : float = center_y + shape_pos_y(100.0, angle)
+
+    drawCircle(center_x, center_y, 20.0, 0.0, 0.0, 255.0)
+    drawCircle(orbit_x, orbit_y, 10.0, 255.0, 0.0, 0.0)
+end
+```
+
+### What you learn
+
+- Using angle and radius to calculate positions.
+- Animating values using `deltaTime`.
