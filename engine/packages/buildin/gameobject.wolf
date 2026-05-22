@@ -1,9 +1,0 @@
-import "component.wolf" as component
-
-struct GameObject
-  start: int
-  update: int
-  components: List<component.Component>
-end
-impl GameObject
-end
