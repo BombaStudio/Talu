@@ -33,7 +33,7 @@ Ensure you have the [Rust toolchain](https://rustup.rs/) installed on your syste
 Clone the repository and build both the engine and CLI:
 
 ```bash
-git clone https://github.com/BombaStudio/Talu.git
+git clone https://github.com/ShinyVoid/Talu.git
 cd Talu
 cargo build --release
 ```
@@ -146,9 +146,9 @@ plugins = my_plugin
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by the BombaStudio Team</sub>
+  <sub>Built with ❤️ by the ShinyVoid Team</sub>
 </div>
 
 ## 📈 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=BombaStudio/Talu&type=Date)](https://star-history.com/#BombaStudio/Talu&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=ShinyVoid/Talu&type=Date)](https://star-history.com/#ShinyVoid/Talu&Date)
